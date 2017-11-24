@@ -1,0 +1,24 @@
+{
+  "name": "osx-default-apps-installer",
+  "version": "0.9.0",
+  "description": "OSX Default Apps Installer",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8"
+  },
+  "dependencies": {
+    "escape-string-applescript": "^2.0.0"
+  }
+}

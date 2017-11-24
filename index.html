@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>OSX Default Apps Installer v0.9.0</title>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+
+      canvas {
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+      }
+
+      .list {
+        margin-top: 240px;
+        border: none;
+        width: 320px;
+        height: 200px;
+        overflow-y: scroll;
+        position: fixed;
+        background: #cecece;
+        padding: 0;
+        list-style-type: none;
+        font-size: 14px;
+        font-family: arial;
+      }
+      button {
+        position: absolute;
+        top: 440px;
+        width: 320px;
+        height: 34px;
+      }
+
+      .password {
+        background-color: coral;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div class="list"></div>
+    <button id="installNow" >Install</button>
+
+
+    <script>
+    var list;
+
+    list = [
+      {key : "homebrew", command : "mkdir homebrew && curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew", label : "HomeBrew", requirePass : false, notes : "" },
+      {key : "ansible", command : "brew install ansible", label : "Ansible", requirePass : false, notes : "" },
+      {key : "node", command : "brew install node", label : "Node", requirePass : false, notes : "" },
+      {key : "eslint", command : "npm install -g eslint", label : "eslint", requirePass : false, notes : "" },
+      {key : "dupes", command : "brew tap homebrew/dupes", label : "brew tap dupes", requirePass : false, notes : "" },
+      {key : "versions", command : "brew tap homebrew/versions", label : "brew tap hb versions", requirePass : false, notes : "" },
+      {key : "php", command : "brew tap homebrew/homebrew-php", label : "brew tap php", requirePass : false, notes : "" },
+      {key : "php70", command : "brew unlink php70", label : "unlink php 70", requirePass : false, notes : "" },
+      {key : "php71", command : "brew install php71", label : "link php 71", requirePass : false, notes : "" },
+      {key : "mcrypt", command : "brew install mcrypt php71-mcrypt", label : "mcrypt", requirePass : false, notes : "" },
+      {key : "composer", command : "brew install composer", label : "composer", requirePass : false, notes : "" },
+      {key : "boris", command : "brew install boris", label : "boris", requirePass : false, notes : "" },
+      {key : "git", command : "brew install git", label : "git", requirePass : false, notes : "" },
+      {key : "color", command : "git config --global color.ui true", label : "git colors", requirePass : false, notes : "" },
+      {key : "aliasCheckout", command : "git config --global alias.co checkout", label : "git alias checkout", requirePass : false, notes : "" },
+      {key : "ruby", command : "brew install ruby", label : "ruby", requirePass : false, notes : "" },
+      {key : "jekyll", command : "gem install jekyll", label : "jeckyll", requirePass : false, notes : "" },
+      {key : "tree", command : "brew install tree", label : "tree", requirePass : false, notes : "" },
+      {key : "cask", command : "brew tap caskroom/cask", label : "brew tap cask", requirePass : false, notes : "" },
+      {key : "versions", command : "brew tap caskroom/versions", label : "brew tap cask versions", requirePass : false, notes : "" },
+      {key : "chrome", command : "brew cask install google-chrome", label : "Chrome", requirePass : false, notes : "" },
+      {key : "rar", command : "brew cask install rar", label : "rar", requirePass : false, notes : "" },
+      {key : "code", command : "brew cask install visual-studio-code", label : "VS code", requirePass : false, notes : "" },
+      {key : "studio", command : "brew cask install zend-studio", label : "Zend Studio", requirePass : false, notes : "" },
+      {key : "spotify", command : "brew cask install spotify", label : "Spotify", requirePass : false, notes : "" },
+      {key : "text", command : "brew cask install sublime-text", label : "Sublime Text", requirePass : false, notes : "" },
+      {key : "shiftit", command : "brew cask install shiftit", label : "Shift it", requirePass : false, notes : "" },
+      {key : "licecap", command : "brew cask install licecap", label : "Licecap", requirePass : false, notes : "" },
+      {key : "firefox", command : "brew cask install firefox", label : "Firefox", requirePass : false, notes : "" },
+      {key : "iterm2", command : "brew cask install iterm2", label : "iterm 2", requirePass : false, notes : "" },
+      {key : "dropbox", command : "brew cask install dropbox", label : "DropBox", requirePass : false, notes : "" },
+      {key : "slack", command : "brew cask install slack", label : "Slack", requirePass : false, notes : "" },
+      {key : "macdown", command : "brew cask install macdown", label : "MacDown", requirePass : false, notes : "" },
+      {key : "pgadmin4", command : "brew cask install pgadmin4", label : "PgAdmin4", requirePass : false, notes : "" },
+      {key : "pgadmin3", command : "brew cask install pgadmin3", label : "PgAdmin3", requirePass : false, notes : "" },
+      {key : "gimp", command : "brew cask install gimp", label : "Gimp", requirePass : false, notes : "" },
+      {key : "1password", command : "brew cask install 1password", label : "1Password", requirePass : false, notes : "" },
+      {key : "kitematic", command : "brew cask install kitematic", label : "Kitematic", requirePass : false, notes : "" },
+      {key : "pro", command : "brew cask install sequel-pro", label : "Sequel-pro", requirePass : false, notes : "" },
+      {key : "cura", command : "brew cask install cura", label : "Cura", requirePass : false, notes : "" },
+      {key : "dbeaver", command : "brew cask install dbeaver", label : "DBeaver", requirePass : false, notes : "" },
+      {key : "postico", command : "brew cask install postico", label : "Postico", requirePass : false, notes : "" },
+      {key : "arduino", command : "brew cask install arduino", label : "Arduino", requirePass : false, notes : "" },
+      {key : "sip", command : "brew cask install sip", label : "Sip", requirePass : false, notes : "" },
+      {key : "postman", command : "brew cask install postman", label : "Postman", requirePass : false, notes : "" },
+      {key : "p4merge", command : "brew cask install p4merge   ", label : "p4merge", requirePass : false, notes : "" },
+      {key : "p4mergetool", command : "git config --global merge.tool p4mergetool", label : "p4mergetool", requirePass : false, notes : "" },
+      {key : "mergetool1", command : atob("Z2l0IGNvbmZpZyAtLWdsb2JhbCBtZXJnZXRvb2wucDRtZXJnZXRvb2wuY21kICIvQXBwbGljYXRpb25zL3A0bWVyZ2UuYXBwL0NvbnRlbnRzL1Jlc291cmNlcy9sYXVuY2hwNG1lcmdlIFwkUFdEL1wkQkFTRSBcJFBXRC9cJFJFTU9URSBcJFBXRC9cJExPQ0FMIFwkUFdEL1wkTUVSR0VEIg=="), label : "mergetool1", requirePass : false, notes : "" },
+      {key : "mergetool2", command : "git config --global mergetool.p4mergetool.trustExitCode false", label : "mergetool2", requirePass : false, notes : "" },
+      {key : "mergetool3", command : "git config --global mergetool.keepBackup false", label : "mergetool3", requirePass : false, notes : "" },
+      {key : "p4mergetool", command : "git config --global diff.tool p4mergetool", label : "mergetool4", requirePass : false, notes : "" },
+      {key : "difftool", command : atob("Z2l0IGNvbmZpZyAtLWdsb2JhbCBkaWZmdG9vbC5wNG1lcmdldG9vbC5jbWQgIi9BcHBsaWNhdGlvbnMvcDRtZXJnZS5hcHAvQ29udGVudHMvUmVzb3VyY2VzL2xhdW5jaHA0bWVyZ2UgXCRMT0NBTCBcJFJFTU9URSI="), label : "difftool", requirePass : false, notes : "" },
+      {key : "blender", command : "brew cask install blender", label : "Blender", requirePass : false, notes : "" },
+      {key : "unarchiver", command : "brew cask install the-unarchiver", label : "The Unarchiver", requirePass : false, notes : "" },
+      {key : "sketchup", command : "brew cask install sketchup", label : "Sketchup", requirePass : false, notes : "" },
+      {key : "tabset", command : "npm install -g iterm2-tab-set", label : "Tabset", requirePass : false, notes : "" },
+      {key : "reactapp", command : "npm install -g create-react-app", label : "React", requirePass : false, notes : "" },
+      {key : "ngcli", command : "npm install -g @angular/cli", label : "Ng-cli", requirePass : false, notes : "" },
+      {key : "eslint", command : "npm install -g eslint", label : "eslint", requirePass : false, notes : "" },
+      {key : "pharo", command : "brew cask install pharo", label : "Pharo", requirePass : false, notes : "" },
+      {key : "showAllFiles", command : "defaults write com.apple.finder AppleShowAllFiles YES", label : "Configure OSX to Show All Hidden Files", requirePass : false, notes : "" },
+      {key : "virtualbox", command : "brew cask install virtualbox", label : "Virtualbox", requirePass : true, notes : "" },
+      {key : "vagrant", command : "brew cask install vagrant", label : "Vagrant", requirePass : true, notes : "" },
+      {key : "java", command : "brew cask install java", label : "Java", requirePass : true, notes : "" },
+      {key : "ohMyZsh", command : atob("c2ggLWMgXCIkKGN1cmwgLWZzU0wgaHR0cHMgOi8vcmF3LmdpdGh1Yi5jb20vcm9iYnlydXNzZWxsL29oLW15LXpzaC9tYXN0ZXIvdG9vbHMvaW5zdGFsbC5zaClcIg=="), label : "Oh my Zsh", requirePass : true, notes : "" },
+      {key : "office", command : "brew cask install microsoft-office", label : "MS Office", requirePass : true, notes : "" },
+      {key : "vlc", command : "brew cask install vlc", label : "Vlc", requirePass : false, notes : "" },
+      {key : "subl", command : atob("bG4gLXMgIi9BcHBsaWNhdGlvbnMvU3VibGltZSBUZXh0LmFwcC9Db250ZW50cy9TaGFyZWRTdXBwb3J0L2Jpbi9zdWJsIiAvdXNyL2xvY2FsL2Jpbi9zdWJsaW1l"), label : "Configure Sublime CLI", requirePass : false, notes : "" },
+        
+    ];
+    </script>
+    <script>
+      // You can also require other files to run in this process
+      require('./renderer.js')
+      require('./sound.js')
+      require('./animation.js')
+      require('./list.js')
+      require('./install.js')
+
+    </script>
+  </body>
+</html>
